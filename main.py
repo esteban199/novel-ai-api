@@ -30,27 +30,27 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todos los headers
 )
 
-class NovelaInput(BaseModel):
-    texto: str
+class NovelInput(BaseModel):
+    text: str
 
-@app.post("/analizar_novela")
-def analizar_novela(novela: NovelaInput):
+@app.post("/analyze_novel")
+def analyze_novel(novel: NovelInput):
     # Agregar múltiples logs para mejor debugging
     logger.debug("Iniciando análisis de novela")
-    logger.debug(f"Longitud del texto recibido: {len(novela.texto)} caracteres")
-    logger.debug(f"Primeros 100 caracteres del texto: {novela.texto[:100]}...")
+    logger.debug(f"Longitud del texto recibido: {len(novel.text)} caracteres")
+    logger.debug(f"Primeros 100 caracteres del texto: {novel.text[:100]}...")
 
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
             {"role": "system", "content": "Eres un experto en literatura y análisis de novelas."},
-            {"role": "user", "content": f"Analiza esta novela y dime personajes, Plot principal, Heroes, Villanos, y cualquier otro detalle que sea relevante, cada punto separado por espacios: {novela.texto}"}
+            {"role": "user", "content": f"Analiza esta novela y dime personajes, Plot principal, Heroes, Villanos, y cualquier otro detalle que sea relevante, cada punto separado por espacios: {novel.text}"}
         ]
     )
     
-    resultado = response.choices[0].message.content
-    logger.debug(f"Análisis completado. Resultado: {resultado}")
-    return {"analisis": resultado}
+    results = response.choices[0].message.content
+    logger.debug(f"Análisis completado. Resultado: {results}")
+    return {"analysis": results}
 
 if __name__ == "__main__":
     import uvicorn
